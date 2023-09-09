@@ -1,16 +1,18 @@
 $ORIGIN constellation.com. 
+
 $TTL 86400 
-@	IN	SOA	dns.constellation.com.	info.constellation.com. (
-			2001062501 ; serial                     
-			21600      ; refresh after 6 hours                     
-			3600       ; retry after 1 hour                     
-			604800     ; expire after 1 week                     
-			86400 )    ; minimum TTL of 1 day  
+
+@		IN			SOA		dns.constellation.com.		info.constellation.com. (
+					2001062501 ; serial                     
+					21600      ; refresh after 6 hours                     
+					3600       ; retry after 1 hour                     
+					604800     ; expire after 1 week                     
+					86400 )    ; minimum TTL of 1 day  
 		     
 		           
-	IN	NS	dns.constellation.com.
-	IN	NS	*.constellation.com.
+	IN	NS	dns
+	IN	A	192.168.20.5
 
-	
+
 dns		IN		A	172.18.0.2			       
 *		IN		A	192.168.20.5
