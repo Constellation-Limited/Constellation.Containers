@@ -1,0 +1,18 @@
+$TTL    1d ; 
+default expiration time (in seconds) of all RRs without their own 
+TTL value@       IN      SOA     
+
+ns.constellation.com. info.constellation.com. 
+(                  3      ; 
+Serial  1d; 
+Refresh 1h; 
+Retry 1w; 
+Expire 1h); 
+Negative Cache TTL;
+
+name servers - NS records     IN      NS      
+ns.constellation.com.; 
+
+name servers - A records
+ns.constellation.com.			IN      A      172.18.0.2 
+*.constellation.com.			IN      A      192.168.20.5 

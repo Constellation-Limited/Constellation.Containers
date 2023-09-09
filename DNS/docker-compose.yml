@@ -14,5 +14,10 @@ services:
       - /dns-server/config:/etc/bind
       - /dns-server/cache:/var/cache/bind
       - /dns-server/records:/var/lib/bind
-    restart:
-      unless-stopped
+    restart: on-failure:3
+    networks:
+      - dns
+
+networks:
+  dns:
+    name: dns
