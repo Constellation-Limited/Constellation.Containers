@@ -11,9 +11,9 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
     volumes:
-      - /dns-server/config:/etc/bind
-      - /dns-server/cache:/var/cache/bind
-      - /dns-server/records:/var/lib/bind
+      - ~/dns-server/config:/etc/bind
+      - ~/dns-server/cache:/var/cache/bind
+      - ~/dns-server/records:/var/lib/bind
     restart: on-failure:3
     networks:
       - dns
