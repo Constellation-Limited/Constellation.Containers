@@ -80,15 +80,17 @@ spec:
       - path: /
         pathType: Prefix
         backend:
-          name: nexus-service
-          port:
-            number: 80
+          service:
+            name: nexus-service
+            port:
+              number: 80
   - host: registry.constellation.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
-          name: nexus-service
-          port:
-            number: 5000
+          service:
+            name: nexus-service
+            port:
+              number: 5000
