@@ -10,10 +10,13 @@ metadata:
   namespace: nexus
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+        app: nexus-app
   template:
     metadata:
       labels:
-        app: nexus
+        app: nexus-app
     spec:
       containers:
       - name: nexus
@@ -75,13 +78,17 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nexus-service
-          servicePort: 80
+          name: nexus-service
+          port:
+            number: 80
   - host: registry.constellation.com
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: nexus-service
-          servicePort: 5000
+          name: nexus-service
+          port:
+            number: 5000
