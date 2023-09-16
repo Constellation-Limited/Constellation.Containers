@@ -3,38 +3,36 @@ kind: Namespace
 metadata:
   name: nexus
 ---
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: nexus
+  name: nexus-app
   namespace: nexus
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-        app: nexus-server
   template:
     metadata:
       labels:
-        app: nexus-server
+        app: nexus
     spec:
       containers:
-        - name: nexus
-          image: sonatype/nexus3:3.60.0
-          resources:
-            limits:
-              memory: "3Gi"
-              cpu: "768m"
-            requests:
-              memory: "2Gi"
-              cpu: "512m"
-          ports:
-            - containerPort: 8081
-          volumeMounts:
-            - name: nexus-data
-              mountPath: /nexus-data
+      - name: nexus
+        image: sonatype/nexus3:3.60.0
+        resources:
+          limits:
+            memory: "3Gi"
+            cpu: "768m"
+          requests:
+            memory: "2Gi"
+            cpu: "512m"
+        ports:
+        - containerPort: 8081
+        - containerPort: 5000
+        volumeMounts:
+          - name: nexus-volume
+            mountPath: /nexus-data
       volumes:
-        - name: nexus-data
+        - name: nexus-volume
           hostPath:
             path: /nexus
             type: DirectoryOrCreate
@@ -42,30 +40,48 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nexus
+  name: nexus-service
+  namespace: nexus
 spec:
   ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: 8081
+  - port: 80
+    targetPort: 8081
+    protocol: TCP
+    name: nexus
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: nexus-registry
   selector:
-    app: nexus-server
-  type: ClusterIP
+    app: nexus-app
 ---
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: ingress-nexus
+  name: nexus-ingress
+  namespace: nexus
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: 100m
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: "nginx"
 spec:
+  tls:
+  - hosts:
+    - nexus.constellation.com 
+    - registry.constellation.com
+    secretName: nexus-tls
   rules:
   - host: nexus.constellation.com
     http:
       paths:
       - path: /
-        pathType: Prefix
         backend:
-          service:
-            name: nexus
-            port:
-              number: 80
+          serviceName: nexus-service
+          servicePort: 80
+  - host: registry.constellation.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nexus-service
+          servicePort: 5000
