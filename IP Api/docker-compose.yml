@@ -1,0 +1,12 @@
+version: '3.9'
+
+services:
+  public-ip-api:
+    image: martinay/show-public-ip:latest
+    container_name: public-ip-api
+    environment:
+      - PORT=45511
+      - TZ=Asia/Almaty
+    ports:
+      - "45511:45511"
+    restart: on-failure:3
